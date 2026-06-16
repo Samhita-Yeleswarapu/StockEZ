@@ -1,0 +1,60 @@
+.portfolio-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 20px;
+  align-items: start;
+}
+
+.section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.holding-link { display: block; }
+.holding-symbol {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--accent-blue);
+}
+.holding-company { font-size: 0.75rem; color: var(--text-secondary); margin-top: 1px; }
+
+.empty-portfolio {
+  text-align: center;
+  padding: 60px 40px;
+}
+.empty-portfolio h3 { font-size: 1.1rem; margin-bottom: 6px; }
+.empty-portfolio p { color: var(--text-secondary); font-size: 0.875rem; }
+
+.portfolio-chart-card { position: sticky; top: 80px; }
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .portfolio-layout { grid-template-columns: 1fr; }
+  .portfolio-chart-card { position: static; }
+}

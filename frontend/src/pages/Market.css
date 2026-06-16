@@ -1,0 +1,166 @@
+.market-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.market-search {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 11px 16px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: var(--font-display);
+  width: 100%;
+  max-width: 400px;
+  transition: border-color 0.15s;
+}
+.market-search:focus { outline: none; border-color: var(--accent-blue); }
+.market-search::placeholder { color: var(--text-muted); }
+
+.sector-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sector-tab {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-display);
+}
+.sector-tab:hover { color: var(--text-primary); border-color: var(--border-light); }
+.sector-tab.active {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+  color: #fff;
+}
+
+.stocks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.stock-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: block;
+  transition: all 0.18s;
+}
+.stock-card:hover {
+  border-color: var(--accent-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59,130,246,0.1);
+}
+
+.stock-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.stock-symbol {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent-blue);
+  margin-bottom: 2px;
+}
+
+.stock-name {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.stock-price {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stock-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.stock-sector {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--bg-elevated);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.stock-cap {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px;
+  color: var(--text-muted);
+}
+.empty-state span { font-size: 2rem; display: block; margin-bottom: 12px; }
+.empty-state p { font-size: 0.9rem; }
+
+/* Live polling UI */
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+
+.market-meta { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+.live-badge {
+  font-size: 0.75rem;
+  color: var(--accent-green);
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.2);
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.refresh-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-display);
+}
+.refresh-btn:hover { border-color: var(--border-light); color: var(--text-primary); }
+
+/* Price flash animations */
+@keyframes flashUp { 0% { background-color: rgba(16,185,129,0.2); } 100% { background-color: transparent; } }
+@keyframes flashDown { 0% { background-color: rgba(239,68,68,0.2); } 100% { background-color: transparent; } }
+
+.stock-card.price-flash-up { animation: flashUp 1.2s ease-out; }
+.stock-card.price-flash-down { animation: flashDown 1.2s ease-out; }
+
+.price-arrow { font-size: 0.7rem; }
+.price-arrow.up { color: var(--accent-green); }
+.price-arrow.down { color: var(--accent-red); }
