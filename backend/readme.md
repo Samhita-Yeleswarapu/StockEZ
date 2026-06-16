@@ -1,169 +1,300 @@
-# ShopEZ Markets — Backend
+# 🚀 ShopEZ Markets - Backend
 
-REST API for the ShopEZ Markets virtual stock trading platform. Built with Node.js, Express, and MongoDB.
+Backend REST API for **ShopEZ Markets**, a virtual stock trading platform where users can simulate stock market investments, build portfolios, track profits/losses, and practice trading without risking real money.
+
+Built with **Node.js**, **Express.js**, **MongoDB**, and **JWT Authentication**.
 
 ---
 
-## Tech Stack
+## 📌 Features
 
-| Layer | Technology |
-|---|---|
-| Runtime | Node.js (ESM modules) |
+### 👤 User Features
+- User Registration & Login
+- JWT-based Authentication
+- Secure Password Hashing using bcryptjs
+- View User Profile
+- Virtual Wallet with Initial Balance
+- Buy & Sell Stocks
+- Track Portfolio Holdings
+- View Transaction History
+- Profit & Loss Calculation
+
+### 📈 Stock Market Features
+- Stock Listing Management
+- Search Stocks by Symbol or Company Name
+- Real-Time Stock Price Updates via Finnhub API
+- Simulated Price Updates when API is unavailable
+- Portfolio Valuation Based on Current Prices
+
+### 🛡️ Admin Features
+- Add, Update, and Delete Stocks
+- View Platform Statistics
+- Manage Users
+- Monitor All Transactions
+
+---
+
+# 🛠️ Tech Stack
+
+| Category | Technology |
+|-----------|------------|
+| Runtime | Node.js |
 | Framework | Express.js |
-| Database | MongoDB (via Mongoose) |
-| Auth | JWT + bcryptjs |
-| External API | Finnhub (live stock quotes) |
-| Price Updater | Custom polling job (60s interval) |
+| Database | MongoDB |
+| ODM | Mongoose |
+| Authentication | JWT |
+| Password Security | bcryptjs |
+| Stock Market Data | Finnhub API |
+| Environment Variables | dotenv |
+| Background Jobs | Custom Price Polling Service |
 
 ---
 
-## Project Structure
+# 📁 Project Structure
 
-```
+```bash
 backend/
+│
 ├── config/
-│   ├── db.js               # MongoDB connection
-│   └── stockApi.js         # Finnhub API helpers
+│   ├── db.js
+│   └── stockApi.js
+│
 ├── controllers/
-│   ├── authController.js   # Register, login, profile
-│   ├── stockController.js  # CRUD for stocks
-│   ├── tradeController.js  # Buy / sell / history
-│   ├── portfolioController.js  # Holdings + summary
-│   └── adminController.js  # Admin-only stats & user mgmt
+│   ├── authController.js
+│   ├── stockController.js
+│   ├── tradeController.js
+│   ├── portfolioController.js
+│   └── adminController.js
+│
 ├── middleware/
-│   ├── verifyToken.js      # JWT auth guard
-│   ├── verifyAdmin.js      # Admin role guard
-│   └── errorHandler.js     # Global error handler
+│   ├── verifyToken.js
+│   ├── verifyAdmin.js
+│   └── errorHandler.js
+│
 ├── models/
 │   ├── User.js
 │   ├── Stock.js
 │   ├── Portfolio.js
 │   └── Transaction.js
+│
 ├── routes/
 │   ├── authRoutes.js
 │   ├── stockRoutes.js
 │   ├── tradeRoutes.js
 │   ├── portfolioRoutes.js
 │   └── adminRoutes.js
+│
 ├── utils/
-│   ├── generateToken.js    # JWT signing
-│   ├── calculatePnL.js     # P&L calculation
-│   └── priceUpdater.js     # Live price polling job
+│   ├── generateToken.js
+│   ├── calculatePnL.js
+│   └── priceUpdater.js
+│
+├── .env
+├── package.json
 └── server.js
 ```
 
 ---
 
-## Setup
+# ⚙️ Installation & Setup
 
-### 1. Install dependencies
+## 1. Clone the Repository
 
 ```bash
+git clone <repository-url>
 cd backend
+```
+
+## 2. Install Dependencies
+
+```bash
 npm install
 ```
 
-### 2. Create `.env`
+## 3. Configure Environment Variables
+
+Create a `.env` file in the root directory.
 
 ```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
-STOCK_API_KEY=your_finnhub_api_key   # optional — simulation runs if omitted
+STOCK_API_KEY=your_finnhub_api_key
 ```
 
-Get a free Finnhub key at https://finnhub.io
+### Environment Variables
 
-### 3. Run
+| Variable | Description |
+|-----------|-------------|
+| PORT | Server Port |
+| MONGO_URI | MongoDB Connection String |
+| JWT_SECRET | Secret Key for JWT |
+| STOCK_API_KEY | Finnhub API Key |
+
+## 4. Run the Application
+
+### Development Mode
 
 ```bash
-# Development (auto-restart)
 npm run dev
+```
 
-# Production
+### Production Mode
+
+```bash
 npm start
 ```
 
-Server starts on `http://localhost:5000`
+Server runs at:
 
----
-
-## API Reference
-
-All protected routes require:
-```
-Authorization: Bearer <token>
+```bash
+http://localhost:5000
 ```
 
 ---
 
-### Auth — `/api/auth`
+# 🔐 Authentication
 
-#### POST `/register`
-Create a new user account.
+Protected routes require a JWT token.
 
-**Body:**
+### Header Format
+
+```http
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+# 📚 API Documentation
+
+## Authentication Routes
+
+Base Route:
+
+```http
+/api/auth
+```
+
+### Register User
+
+```http
+POST /register
+```
+
+#### Request Body
+
 ```json
 {
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "password": "secret123",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
   "initialBalance": 100000
 }
 ```
-`initialBalance` is optional — defaults to ₹1,00,000 if omitted.
 
-**Response:**
-```json
-{ "success": true, "message": "Registration successful", "token": "..." }
-```
+#### Response
 
----
-
-#### POST `/login`
-Authenticate an existing user.
-
-**Body:**
-```json
-{ "email": "jane@example.com", "password": "secret123" }
-```
-
-**Response:**
 ```json
 {
   "success": true,
-  "token": "...",
-  "user": { "id": "...", "name": "Jane Doe", "email": "...", "role": "USER", "balance": 100000 }
+  "message": "Registration Successful",
+  "token": "jwt_token"
 }
 ```
 
 ---
 
-#### GET `/profile` 🔒
-Get the logged-in user's profile.
+### Login User
 
-**Response:**
+```http
+POST /login
+```
+
+#### Request Body
+
 ```json
-{ "success": true, "user": { "name": "...", "email": "...", "balance": 95000, "role": "USER" } }
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "token": "jwt_token",
+  "user": {
+    "id": "user_id",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "role": "USER",
+    "balance": 100000
+  }
+}
 ```
 
 ---
 
-### Stocks — `/api/stocks` 🔒
+### Get User Profile
 
-#### GET `/`
-Get all stocks.
+```http
+GET /profile
+```
 
-#### GET `/search/:keyword`
-Search stocks by symbol or company name.
+Authentication Required ✅
 
-#### GET `/:symbol`
-Get a single stock by symbol (e.g. `GET /api/stocks/RELIANCE`).
+---
 
-#### POST `/` 🔒 (Admin only)
-Add a new stock.
+# 📈 Stock Routes
 
-**Body:**
+Base Route:
+
+```http
+/api/stocks
+```
+
+### Get All Stocks
+
+```http
+GET /
+```
+
+### Search Stocks
+
+```http
+GET /search/:keyword
+```
+
+Example:
+
+```http
+GET /search/TCS
+```
+
+### Get Single Stock
+
+```http
+GET /:symbol
+```
+
+Example:
+
+```http
+GET /RELIANCE
+```
+
+### Add New Stock
+
+```http
+POST /
+```
+
+Admin Only ✅
+
+#### Request Body
+
 ```json
 {
   "symbol": "TCS",
@@ -175,83 +306,115 @@ Add a new stock.
 }
 ```
 
-#### PUT `/:id` 🔒 (Admin only)
-Update stock details (including price).
+### Update Stock
 
-#### DELETE `/:id` 🔒 (Admin only)
-Delete a stock.
+```http
+PUT /:id
+```
+
+Admin Only ✅
+
+### Delete Stock
+
+```http
+DELETE /:id
+```
+
+Admin Only ✅
 
 ---
 
-### Trade — `/api/trade` 🔒
+# 💰 Trading Routes
 
-#### POST `/buy`
-Buy shares of a stock.
+Base Route:
 
-**Body:**
-```json
-{ "stockId": "mongo_object_id", "quantity": 5 }
+```http
+/api/trade
 ```
 
-**Response:**
-```json
-{ "success": true, "message": "Stock purchased successfully", "balance": 82750.00 }
+Authentication Required ✅
+
+### Buy Stock
+
+```http
+POST /buy
 ```
 
-Fails with 400 if balance is insufficient.
+#### Request Body
 
----
-
-#### POST `/sell`
-Sell shares you own.
-
-**Body:**
-```json
-{ "stockId": "mongo_object_id", "quantity": 2 }
-```
-
-Fails with 400 if you don't own enough shares.
-
----
-
-#### GET `/history`
-Get all transactions for the logged-in user, newest first.
-
-**Response:**
 ```json
 {
-  "success": true,
-  "transactions": [
-    {
-      "type": "BUY",
-      "quantity": 5,
-      "price": 3450.75,
-      "totalAmount": 17253.75,
-      "stockId": { "symbol": "TCS", "companyName": "Tata Consultancy Services" },
-      "createdAt": "2025-06-10T08:30:00.000Z"
-    }
-  ]
+  "stockId": "stock_id",
+  "quantity": 5
 }
 ```
 
+#### Response
+
+```json
+{
+  "success": true,
+  "message": "Stock purchased successfully",
+  "balance": 82750
+}
+```
+
+### Sell Stock
+
+```http
+POST /sell
+```
+
+#### Request Body
+
+```json
+{
+  "stockId": "stock_id",
+  "quantity": 2
+}
+```
+
+### Transaction History
+
+```http
+GET /history
+```
+
+Returns all BUY and SELL transactions for the authenticated user.
+
 ---
 
-### Portfolio — `/api/portfolio` 🔒
+# 📊 Portfolio Routes
 
-#### GET `/`
-Get all holdings with stock details populated.
+Base Route:
 
-#### GET `/summary`
-Get a financial summary.
+```http
+/api/portfolio
+```
 
-**Response:**
+Authentication Required ✅
+
+### Get Portfolio Holdings
+
+```http
+GET /
+```
+
+### Portfolio Summary
+
+```http
+GET /summary
+```
+
+#### Response
+
 ```json
 {
   "success": true,
   "summary": {
-    "balance": 82750.00,
+    "balance": 82750,
     "invested": 17253.75,
-    "currentValue": 18200.00,
+    "currentValue": 18200,
     "profitLoss": 946.25,
     "totalHoldings": 1
   }
@@ -260,84 +423,176 @@ Get a financial summary.
 
 ---
 
-### Admin — `/api/admin` 🔒 (Admin role only)
+# 👨‍💼 Admin Routes
 
-#### GET `/stats`
-Platform-wide stats — total users, transactions, volume.
+Base Route:
 
-#### GET `/users`
-List all registered users.
-
-#### DELETE `/users/:id`
-Delete a user account.
-
-#### GET `/transactions`
-All transactions across all users.
-
----
-
-## Data Models
-
-### User
-| Field | Type | Default |
-|---|---|---|
-| name | String | required |
-| email | String | required, unique |
-| password | String | hashed |
-| role | `USER` / `ADMIN` | `USER` |
-| balance | Number | 100000 |
-
-### Stock
-| Field | Type |
-|---|---|
-| symbol | String (unique, uppercase) |
-| companyName | String |
-| currentPrice | Number |
-| sector | String |
-| marketCap | Number |
-| description | String |
-
-### Portfolio
-Belongs to one user. Contains an array of holdings: `{ stockId, quantity, averagePrice }`.
-
-Average price is recalculated on each additional buy using weighted average.
-
-### Transaction
-Logs every BUY/SELL: `{ userId, stockId, type, quantity, price, totalAmount, createdAt }`.
-
----
-
-## Live Price Updater
-
-`utils/priceUpdater.js` runs automatically when the server starts.
-
-- Fetches all stocks from DB every **60 seconds**
-- Tries **Finnhub** first using `STOCK_API_KEY`
-- Falls back to **simulated drift** (±0.8% per cycle) if key is missing or Finnhub returns nothing
-- Uses **bulk write** for efficient DB updates
-- Logs only changed prices to console
-
-To change the interval, edit `UPDATE_INTERVAL_MS` in `priceUpdater.js`.
-
----
-
-## Auth Flow
-
+```http
+/api/admin
 ```
-Register → JWT returned → store in localStorage
-Login    → JWT returned → store in localStorage
-All protected requests → send JWT in Authorization header
-Token decoded by verifyToken middleware → req.user.userId available
-Admin routes also pass through verifyAdmin → checks req.user.role === "ADMIN"
+
+Admin Authentication Required ✅
+
+### Platform Statistics
+
+```http
+GET /stats
+```
+
+Returns:
+- Total Users
+- Total Transactions
+- Trading Volume
+- Platform Analytics
+
+### Get All Users
+
+```http
+GET /users
+```
+
+### Delete User
+
+```http
+DELETE /users/:id
+```
+
+### Get All Transactions
+
+```http
+GET /transactions
 ```
 
 ---
 
-## Error Responses
+# 🗄️ Database Models
 
-All errors follow this shape:
+## User Model
+
+```js
+{
+  name: String,
+  email: String,
+  password: String,
+  role: "USER" | "ADMIN",
+  balance: Number
+}
+```
+
+## Stock Model
+
+```js
+{
+  symbol: String,
+  companyName: String,
+  currentPrice: Number,
+  sector: String,
+  marketCap: Number,
+  description: String
+}
+```
+
+## Portfolio Model
+
+```js
+{
+  userId: ObjectId,
+  holdings: [
+    {
+      stockId: ObjectId,
+      quantity: Number,
+      averagePrice: Number
+    }
+  ]
+}
+```
+
+## Transaction Model
+
+```js
+{
+  userId: ObjectId,
+  stockId: ObjectId,
+  type: "BUY" | "SELL",
+  quantity: Number,
+  price: Number,
+  totalAmount: Number,
+  createdAt: Date
+}
+```
+
+---
+
+# 🔄 Live Stock Price Updater
+
+A background service automatically updates stock prices.
+
+### Workflow
+
+1. Runs every 60 seconds
+2. Fetches all stocks from MongoDB
+3. Retrieves latest prices from Finnhub
+4. Updates stock prices in bulk
+5. Falls back to simulated market fluctuations if API data is unavailable
+
+### Fallback Simulation
+
+```text
+Price Change Range:
+-0.8% to +0.8%
+```
+
+---
+
+# 🔒 Security Features
+
+- JWT Authentication
+- Password Hashing using bcryptjs
+- Protected Routes Middleware
+- Admin Authorization Middleware
+- Environment Variable Protection
+- Centralized Error Handling
+
+---
+
+# ❌ Error Response Format
+
 ```json
-{ "success": false, "message": "Human-readable error description" }
+{
+  "success": false,
+  "message": "Error description"
+}
 ```
 
-Common HTTP codes used: `200`, `201`, `400` (bad input), `401` (no/invalid token), `403` (not admin), `404` (not found), `500` (server error).
+### Common Status Codes
+
+| Code | Meaning |
+|--------|---------|
+| 200 | Success |
+| 201 | Created |
+| 400 | Bad Request |
+| 401 | Unauthorized |
+| 403 | Forbidden |
+| 404 | Not Found |
+| 500 | Internal Server Error |
+
+---
+
+# 🚀 Future Enhancements
+
+- Watchlist Functionality
+- Stock Charts & Historical Data
+- Market News Integration
+- Leaderboard System
+- Trading Competitions
+- Email Notifications
+- Two-Factor Authentication (2FA)
+- Advanced Portfolio Analytics
+
+---
+
+# 👨‍💻 Author
+
+Developed as part of the **ShopEZ Markets Virtual Stock Trading Platform** using the MERN stack ecosystem.
+
+⭐ If you found this project useful, consider giving the repository a star.
